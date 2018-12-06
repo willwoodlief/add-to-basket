@@ -1,0 +1,227 @@
+{% assign on_sale = false %}
+{% if product.compare_at_price_min > product.price_min %}
+{% assign on_sale = true %}
+{% endif %}
+
+{% assign sold_out = true %}
+{% if product.available  %}
+{% assign sold_out = false %}
+{% endif %}
+
+{% assign productIndex = forloop.index | minus:1 %}
+{% assign delayTime = settings.time_lazy_load | times : productIndex %}
+
+<div class="inner product-item {% if sold_out %}sold-out{% endif %}{% if on_sale %} on-sale{% endif %} wow fadeIn" data-wow-delay="{{delayTime}}ms" id="product-{{ product.id }}">
+    <div class="inner-top">
+        <div class="product-top">
+            <div class="product-image{% if settings.image_swap %} image-swap{% endif %}">
+                <a href="{{ product.url | within: collection }}" class="product-grid-image">
+                    {% if product.images.size > 1 and settings.image_swap %}
+                    <img class="pr-swp-img" src="{{ product.images[0].src | product_img_url: 'large' }}" alt="{{ product.images[0].src | escape }}">
+
+                    <div class="hover-image">
+
+                        <img src="{{ product.images[1].src | product_img_url: 'large' }}" alt="{{ product.images[1].src | escape }}">
+                    </div>
+                    {% else %}
+                    <img src="{{ product.featured_image.src | product_img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+
+                    {% endif %}
+                    <div class="hover"></div>
+                </a>
+
+            </div>
+
+            {% if on_sale or sold_out %}
+            <div class="product-label">
+                {% if on_sale %}
+                <strong class="label" {% if settings.enable_multilang %}data-translate="products.product.sale"{% endif %}>{{ 'products.product.sale' | t }}</strong>
+                {% endif %}
+                {% if sold_out %}
+                <strong class="sold-out-label" {% if settings.enable_multilang %}data-translate="products.product.sold_out"{% endif %}>{{ 'products.product.sold_out' | t }}</strong>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="product-des">
+
+                {% include 'wishlist-product' %}
+
+                {% assign first_variant = product.variants | first  %}
+                {% assign first_variant_id = first_variant.id  %}
+                <div class="action">
+                    {% assign variantCount = product.variants | size %}
+                    <form action="/cart/add" method="post" class="variants" id="product-actions-{{ product.id }}" enctype="multipart/form-data" style="padding:0px;">
+                        {% if sold_out %}
+                        <input style=" " class="btn add-to-cart-btn" type="submit" value="{{ 'products.product.unavailable' | t }}" disabled="disabled" {% if settings.enable_multilang %}data-translate="products.product.unavailable"{% endif %}/>
+                        {% else %}
+                        <input style=" " class="btn product-select-btn" type="button" onclick="window.location.href='{{product.url}}'" value="{{ 'products.product.select_options' | t }}" {% if settings.enable_multilang %}data-translate="products.product.select_options"{% endif %}/>
+                        {% endif %}
+
+                        {% if sold_out != true %}
+                        <input style="" id="quick-add-{{first_variant_id}}" class="btn grid-add-to-cart-btn" type="submit" value="{{ 'products.product.add_to_cart' | t }}" {% if settings.enable_multilang %}data-translate="products.product.add_to_cart"{% endif %}/>
+                        {% endif %}
+
+                        <input type="hidden" name="id" value="{{ product.variants[0].id }}" />
+
+                        <div id="product-variants" style="display:none" >
+                            {% assign variantCount = product.variants | size %}
+                            {% if product.available %}
+                            {% if variantCount > 1 %}
+
+
+
+                            <select  id="id-select-vars-{{first_variant_id}}">
+                                {% for variant in product.variants %}
+                                <option  value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money }}</option>
+                                {% endfor %}
+                            </select>
+
+                            {% if settings.use_color_swatch %}
+                            {% for option in product.options %}
+                            {% include 'swatch' with option %}
+                            {% endfor %}
+                            {% endif %}
+                            {% else %}
+                            <input type="hidden" name="id" value="{{ product.variants[0].id }}" />
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </form>
+                    <script>
+                        $(function() {
+                            debugger;
+                            let selected_color = null;
+                            let selected_size = null;
+                            let da_button = $("#quick-add-{{first_variant_id}}");
+
+                            if (da_button.length === 0) {
+                                console.error("cannot find button id of quick-add-{{first_variant_id}}  " );
+                                return;
+                            }
+
+                            da_button.closest('div.inner.product-item').find('.item-swatch li label').hover(function(e){
+                                selected_color = $(this).closest('li').find('span.color-name').text();
+
+                            });
+
+                            //change to size and remove class from siblings and add the selected and no default or propogation
+                            da_button.closest('div.inner.product-item').find('.product-grid-options-size li a').click(function(e){
+
+                                let that =  $(this)
+                                selected_size = that.data('size');
+                                let siblings = that.closest('ul').siblings('a');
+                                siblings.removeClass('selected-size');
+                                that.addClass('selected-size');
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                            });
+
+                            da_button.click(function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (!selected_color || !selected_size) {
+                                    console.log("shake");
+                                    return;
+                                }
+
+                                let variant_id = null;
+                                let quantity = 1;
+                                let title = "{{ product.title | split: '|' | first }}";
+                                let image = "{{ product.featured_image.src | product_img_url: 'large' }}";
+                                //find the variant id from color and size
+
+
+                                let found_option = $("#id-select-vars-{{first_variant_id}}")
+                                    .find('option')
+                                    .filter(function() {
+                                        let r = new RegExp( selected_color + ' / ' + selected_size, "i");
+                                        return $(this).text().match(r);
+                                    })
+
+                                if (found_option.length === 0 ) {
+                                    console.error("cannot find the variant from color [" +selected_color+ "] and size ["+selected_size+"] " );
+                                    return;
+                                }
+                                variant_id = found_option.val();
+                                if (!variant_id) {
+                                    console.error("cannot find the variant from color [" +selected_color+ "] and size ["+selected_size+"] after we got the option dom " );
+                                    return;
+                                }
+                                ella.doAjaxAddToCart(variant_id, quantity, title, image);
+
+                            });
+
+                        });
+                    </script>
+                </div>
+
+
+                {% if settings.enable_quick_view %}
+                <div class="quickview-button">
+                    <a href="javascript:void(0)" id="{{ product.handle }}" title="{{ 'products.product.quick_view' | t }}" {% if settings.enable_multilang %}data-translate="products.product.quick_view" translate-item="title"{% endif %}><span {% if settings.enable_multilang %}data-translate="products.product.quick_view"{% endif %}>{{ 'products.product.quick_view' | t }}</span></a>
+                </div>
+                {% endif %}
+
+            </div>
+            {% if settings.display_item_size %}
+            <div class="option-size-dk">
+                {% include 'item-size' %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="product-bottom">
+
+            {% if settings.show_vendor %}
+            <div class="product-vendor">{{ product.vendor }}</div>
+            {% endif %}
+            <a class="product-title" href="{{ product.url | within: collection }}">
+                {% if settings.enable_multilang %}
+                <span class="lang1">{{ product.title | split: '|' | first }}</span>
+                <span class="lang2">{{ product.title | split: '|' | last }}</span>
+                {% else %}
+                {{ product.title | split: '|' | first }}
+                {% endif %}
+            </a>
+            {% if settings.display_product_reviews %}
+            <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+            {% endif %}
+
+            {% if settings.display_item_swatch %}
+            {% include 'item-swatch' %}
+            {% endif %}
+
+            <div class="option-size-dk mobile-size-options">
+                {% include 'item-size' %}
+            </div>
+
+            <div class="price-box" style="margin-top:6px">
+                {% if on_sale %}
+                <p class="sale">
+                    <span class="old-price">{{ product.compare_at_price_min | money }}</span>
+                    <span class="special-price">{% if product.price_varies %}{% include 'varies_from' %}{% endif %}{{ product.price_min | money }}</span>
+                </p>
+                {% else %}
+                <p class="regular-product">
+                    <span>{% if product.price_varies %}{% include 'varies_from' %}{% endif %}{{ product.price_min | money }}</span>
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    {% if settings.display_item_size and false%}
+    <div class="option-size-mb">
+        {% include 'item-size' %}
+    </div>
+    {% endif %}
+
+
+
+</div>

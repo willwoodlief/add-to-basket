@@ -1,3 +1,5 @@
+var ella = null;
+
 (function($) {
     if ($(".collection-sidebar")) {
         //work only in collection page
@@ -162,7 +164,7 @@
         }
     });
 
-    var ella = {
+     ella = {
         ellaTimeout: null,
         isSidebarAjaxClick: false,
         init: function() {
@@ -684,7 +686,8 @@
                 });
             });
         },
-        initColorSwatchGrid: function() { 
+        initColorSwatchGrid: function() {
+            //todo mercy add in code to put color in hidden input in the form
           jQuery('.item-swatch li label').hover(function(){
             var newImage = jQuery(this).parent().find('.hidden a').attr('href');
             jQuery(this).parents('.grid-item').find('.product-grid-image img').attr({ src: newImage }); 
@@ -1382,6 +1385,7 @@
                     quickviewTemplate.find('form.variants > select').append(option);
                 }
 
+
                 new Shopify.OptionSelectors("product-select-" + product.id, {
                     product: product,
                     onVariantSelected: selectCallbackQuickview
@@ -1524,10 +1528,10 @@
       },
       initoptionsize:function(){
         if ($(window).innerWidth() < 1025) {
-          $('.option-size-dk .product-grid-options-size').remove();
+       //   $('.option-size-dk .product-grid-options-size').remove();
         }
         else{
-          $('.option-size-mb .product-grid-options-size').remove();
+       //   $('.option-size-mb .product-grid-options-size').remove();
         }
       }
       

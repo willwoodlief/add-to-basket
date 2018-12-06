@@ -1,1 +1,11 @@
 1) Ella Sections Ready 1.0.0/assets/ella.js  line 165 :
+   old: var ella = {
+   new ella = {
+            line 1:
+   var ella = null;
+
+
+
+
+todo add product-selectors generated code to the thumbnails add to cart, when colors or sizes added then calculate new option
+todo use Shopify.linkOptionSelectors and other code at 794 to help link in quick buy buttons

@@ -156,7 +156,7 @@ a, a:link, a:hover, a:active { outline: none; }
 
 .btn[disabled] { opacity:1; filter:alpha(opacity=100); background: none!important; border-color: #bebebe!important; color: #bebebe!important; }
 
-.quickview-button { margin-top: 80px; line-height:1; }
+.quickview-button { margin-top: 40px; line-height:1; }
 .quickview-button a { padding: 5px 10px; text-transform: uppercase; font-size: 11px; font-weight:400; background: #333; color: #fff; display: block; letter-spacing:0.05em; text-decoration: none; }
 
 /* table  ---------------------------------------------------- */
@@ -1187,7 +1187,7 @@ label[for="productSelect"] {margin-bottom: 10px;}
 .widget-product .grid-item,.wow.animated { -webkit-animation-duration:1.5s; -moz-animation-duration:1.5s; -ms-animation-duration:1.5s; -o-animation-duration:1.5s;  animation-duration:1.5s; }
 .animated { -moz-opacity: 1; opacity:1; filter:alpha(opacity=100); /* For IE8 and earlier */-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"; /* IE8 */}
 
-#back-top { background: url(icons_new14.png ) 13px -1553px no-repeat #000; z-index:99; font-size: 0;  height: 52px;  position: fixed;  right: 40px;  top: 50%;  width: 52px; cursor: pointer; margin:0; }
+#back-top { background: url(icons_new14.png ) 13px -1553px no-repeat #000; z-index:99; font-size: 0;  height: 52px;  position: fixed;  right: 40px;  top: 80%;  width: 52px; cursor: pointer; margin:0; }
 
 /* Swatches Styles */
 .swatch { margin: 0 0 11px; }
@@ -2188,11 +2188,7 @@ table.wishlist-product .a-center { text-align: center; }
   transition: none;
   font-weight:700;
 }
-.product-grid-options-size li a:hover{
-  background:#000;
-  border:1px solid #000;
-  color:#fff;
-}
+
 
 .product-grid-options-size li.soldout {
   background: #eee!important;
@@ -2411,4 +2407,53 @@ table.wishlist-product .a-center { text-align: center; }
 }
 .home-slideshow:hover .slick-arrow{
   opacity:.7;
+}
+
+
+
+/* added by Will, shopify will put its own currency switcher in that is not needed by this theme*/
+.doubly-nice-select.currency-switcher {
+  display:none;
+}
+
+.mobile-size-options {
+  display: none;
+}
+
+input.product-select-btn {
+  width: 80%;
+  display: inline-block;
+}
+
+input.add-to-cart-btn  {
+  width: 80%;
+  margin: 6px;
+}
+
+input.grid-add-to-cart-btn {
+  width: 80%;
+  margin: 6px;
+}
+
+.product-des .addwishlist{
+  display:flex;
+  position: static;
+}
+
+.product-grid-options-size li a:hover{
+  background: #343434;
+  border:1px solid #000;
+  color:#fff;
+}
+
+.product-grid-options-size li a.selected-size{
+  background:#000;
+  border:1px solid #000;
+  color:#fff;
+}
+
+ul.item-swatch li.selected-color {
+  border: 1px solid black;
+  padding: 3px;
+  border-radius: 50%;
 }

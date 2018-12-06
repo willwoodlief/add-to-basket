@@ -29,6 +29,7 @@
     <a title="{{value}}" href="{{ product.url}}?variant={{ variant.id }}">
       {{ value }}
     </a>
+    {#todo mercy change this to not be a link, but put the color in an input#}
     {% assign option_count = option_count | plus : 1 %}
   </li>
   {% endif %}

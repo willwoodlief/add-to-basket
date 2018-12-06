@@ -1,7 +1,9 @@
 {% if settings.enable_wishlist %}
 <div class="addwishlist">
-  <a title="Wishlist" class="action--wishlist wishlist-btn" href="#" data-product-handle="{{ product.handle }}">
-    <i class="fa fa-heart" aria-hidden="true"></i>
+  <!-- changed by Will, set the width of the anchor same as the hard coded i width in the style sheets so clickbox is only in the heart-->
+  <a title="Wishlist" style="width:27px" class="action--wishlist wishlist-btn" href="#" data-product-handle="{{ product.handle }}">
+
+  <i class="fa fa-heart" aria-hidden="true"></i>
     <span class="wishlist_text" {% if settings.enable_multilang %} data-translate="wishlist.general.add_to_wishlist"{% endif %} >{{'wishlist.general.add_to_wishlist' | t}}</span>
   </a>
 </div>

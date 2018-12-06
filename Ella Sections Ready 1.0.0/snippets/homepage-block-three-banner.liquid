@@ -5,28 +5,9 @@
       <a href="{{ settings.three_block_banner_link_1 }}">
         {{ 'top-banner-home-1.jpg' | asset_url | img_tag }}
         {% if settings.display_banner_text_1 %}
-          <h4>
-            <span style="
-              {% if settings.three_block_banner_size_1 != blank %}
-                  font-size: {{ settings.three_block_banner_size_1 }}px;
-              {% elsif settings.three_block_banner_size != blank %}
-                  font-size: {{ settings.three_block_banner_size }}px;
-              {% endif %}
-              {% if settings.three_block_banner_color_1 != blank %} 
-                  color: {{ settings.three_block_banner_color_1 }};
-              {% elsif settings.three_block_banner_color != blank %}
-                  color: {{ settings.three_block_banner_color }};
-              {% endif %}"
-            >	
-              {% if settings.three_block_banner_text_1 != blank %}
-                {% if settings.enable_multilang %}
-                <span class="lang1">{{ settings.three_block_banner_text_1 | split: '|' | first }}</span>
-                <span class="lang2">{{ settings.three_block_banner_text_1 | split: '|' | last }}</span>
-                {% else %}
-                <span>{{ settings.three_block_banner_text_1 | split: '|' | first }}</span>
-                {% endif %}
-              {% endif %}
-            </span>
+          <h4 style="{% if block.settings.three_block_heading_size != blank %}font-size: {{ block.settings.three_block_heading_size }}px;{% endif %}{% if block.settings.three_block_heading_color != blank %}color: {{ block.settings.three_block_heading_color }};{% endif %}">
+            <!-- overwriting the color  here without messing up the multilingual. This is why there is a div wrapping them-->
+            <div style="display:inline-block;background-color: white;padding: 0.25em;color: black;">{% include 'multilang' with block.settings.three_block_heading_banner %}</div>
           </h4>
         {% endif %}
       </a>

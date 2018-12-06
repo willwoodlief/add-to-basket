@@ -14,7 +14,7 @@
       {% assign text = color | handleize %}
 
       <li>
-        <label style="{% if text == 'white' %}border: 1px solid #cbcbcb; {% endif %}background-color: {{ color | split: ' ' | last | handle }}; background-image: url({{ text | append: '.png' | file_url }});"></label>
+        <label style="{% if text == 'white' %}border: 1px solid #cbcbcb; {% endif %}background-color: {{ color | split: ' ' | last | handle }}; "></label>
 
         {% if variant.image != null %}
         <div class="hidden">
